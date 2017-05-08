@@ -1,0 +1,43 @@
+_setup
+
+writeGPO
+
+verifyI2cPassword
+
+selectFile_NDEF_App
+
+sendApdu
+GetI2Csession: 0
+=> 
+StartTransmission 02 00 A4 04 00 07 D2 76 00 00 85 01 01 A609
+
+receiveResponse, len=5
+<= 02 90 00 F1 09 
+sendApdu
+GetI2Csession: 0
+=> 
+StartTransmission 03 00 20 00 03 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0382
+
+receiveResponse, len=5
+<= 03 90 00 2D 53 Password passed
+
+sendApdu
+GetI2Csession: 0
+=> 
+StartTransmission 02 00 A4 00 0C 02 E1 01 7F0D
+
+receiveResponse, len=5
+<= 02 90 00 F1 09 
+GetI2Csession: 0
+=> 
+StartTransmission 03 00 D6 00 04 01 61 D0E3
+
+receiveResponse, len=5
+<= 03 90 00 2D 53 
+send DESELECT
+GetI2Csession: 0
+=> 
+StartTransmission C2 E0B4
+
+receiveResponse, len=3
+<= C2 E0 B4 
