@@ -1,0 +1,27 @@
+NFC-Chip:
+im datenblatt ist Device Select als adresse des i2c devices gedacht!!!!
+
+
+1: Setup
+---------
+
+GPIO_PIN? 
+{
+
+vertify_password 
+{
+	selectFile_NDEF_App();
+
+
+
+//DATASHEET
+Selection of an NDEF message
+The RF or I2C host shall use this procedure to detect the NDEF message inside an
+M24SR04.
+The NDEF detection procedure is as follows:
+8.2
+1. Open an RF or an I2C session x
+2. Send the SelectNDEFTagApplication command // Seite 38
+3. Select the CC file
+4. Read the CC file
+5. Select the NDEF file.
