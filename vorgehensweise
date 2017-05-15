@@ -35,3 +35,5 @@ wobei INS_SELECT_FILE = 0xA4 und AID_NDEF_TAG_APPLICATION2 = 0xD2\0x76\0x00\0x00
 + CRC !!!!!
 
 Antwort lesen bytes 2 + 3
+
+

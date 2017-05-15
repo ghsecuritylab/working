@@ -46,9 +46,9 @@ int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
-prog_char URI1[] PROGMEM = "http://regnerischernachmittag.wordpress.com/?writesample";
-prog_char URI2[] PROGMEM = "https://github.com/rena2019/ArduinoM24SR";
-prog_char URI3[] PROGMEM = "https://twitter.com/regnerischerTag";
+const prog_char URI1[] PROGMEM = "http://regnerischernachmittag.wordpress.com/?writesample";
+const prog_char URI2[] PROGMEM = "https://github.com/rena2019/ArduinoM24SR";
+const prog_char URI3[] PROGMEM = "https://twitter.com/regnerischerTag";
 
 void setup() 
 {

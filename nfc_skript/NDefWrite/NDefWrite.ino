@@ -47,7 +47,7 @@ int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
-const prog_char URI1[] PROGMEM = "http://regnerischernachmittag.wordpress.com/?writesample";
+const prog_char URI1[] PROGMEM = "http://crossbar.io/";
 const prog_char URI2[] PROGMEM = "https://github.com/rena2019/ArduinoM24SR";
 const prog_char URI3[] PROGMEM = "https://twitter.com/regnerischerTag";
 
@@ -60,18 +60,19 @@ void setup()
    m24sr._cmds = true;
    m24sr._setup();
    //displayFreeRAM();
-   //NdefMessage message = NdefMessage();
-  // switch (random(3)) {
-   //  case 0:  message.addUriRecord(&URI1[0]);
-    //          break;
-    // case 1:  message.addUriRecord(&URI2[0]);
-    //          break;
-   //  default: message.addUriRecord(&URI3[0]);
-   //           break;
-  // }
+   NdefMessage message = NdefMessage();
+  message.addUriRecord(&URI1[0]);
+//   switch (random(3)) {
+//     case 0:  message.addUriRecord(&URI1[0]);
+//              break;
+//     case 1:  message.addUriRecord(&URI2[0]);
+//              break;
+//     default: message.addUriRecord(&URI3[0]);
+//              break;
+//   }
            
   // displayFreeRAM();
-   //m24sr.writeNdefMessage(&message);
+   m24sr.writeNdefMessage(&message);
    //Serial.print(F("\r\nUse NFC phone/reader to read out NFC tag content!"));
 }
 
