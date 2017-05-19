@@ -39,7 +39,6 @@ How to use/install:
 #define gpo_pin 7
 M24SR m24sr(gpo_pin);
 
-
 //http://playground.arduino.cc/Code/AvailableMemory
 int freeRam () {
   extern int __heap_start, *__brkval; 
@@ -47,7 +46,7 @@ int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
-const prog_char URI1[] PROGMEM = "http://crossbar.io/";
+const prog_char URI1[] PROGMEM = "http://regnerischernachmittag.wordpress.com/?writesample";
 const prog_char URI2[] PROGMEM = "https://github.com/rena2019/ArduinoM24SR";
 const prog_char URI3[] PROGMEM = "https://twitter.com/regnerischerTag";
 
@@ -59,29 +58,52 @@ void setup()
    m24sr._verbose = true;
    m24sr._cmds = true;
    m24sr._setup();
-   //displayFreeRAM();
+   displayFreeRAM();
    NdefMessage message = NdefMessage();
-  message.addUriRecord(&URI1[0]);
-//   switch (random(3)) {
-//     case 0:  message.addUriRecord(&URI1[0]);
-//              break;
-//     case 1:  message.addUriRecord(&URI2[0]);
-//              break;
-//     default: message.addUriRecord(&URI3[0]);
-//              break;
-//   }
-           
-  // displayFreeRAM();
+   //message.addUriRecord(&URI1[0]);
+   message.addUriRecord("http://crossbar.io");
+      message.addUriRecord("http://crossbar.io");
+         message.addTextRecord("http://crossbar.io");
+
+
+   displayFreeRAM();
    m24sr.writeNdefMessage(&message);
-   //Serial.print(F("\r\nUse NFC phone/reader to read out NFC tag content!"));
+   
+   Serial.print(F("\r\nReading Systemfile"));
+   
+   m24sr.displaySystemFile();
+
+  Serial.print(F("\r\nRead NDef"));
+
+  displayNDefRecord();
+   
+   
+   
 }
 
 void loop() 
 {
 }
 
-//void displayFreeRAM() {
-  //Serial.print(F("\r\nfree RAM: "));
- // Serial.println(freeRam(), DEC);
-//}
+void displayFreeRAM() {
+  Serial.print(F("\r\nfree RAM: "));
+  Serial.println(freeRam(), DEC);
+}
 
+void displayNDefRecord() {
+    //read NDef message from memory
+    NdefMessage* pNDefMsg = m24sr.getNdefMessage();
+    displayFreeRAM();
+    if (pNDefMsg != NULL) {
+       pNDefMsg->print();
+       NdefRecord rec = pNDefMsg->getRecord(0);
+//       String txt = rec.toString();
+       Serial.print(F("NDefRecord: "));
+//       Serial.println(txt);
+Serial.println(rec.getType());
+Serial.println(rec.getId());
+
+
+       delete pNDefMsg;
+    }
+}

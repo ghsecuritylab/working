@@ -55,8 +55,8 @@ void setup()
    Serial.begin(9600);
    randomSeed(analogRead(0));
    //for debug purpose
-   //m24sr._verbose = true;
-   //m24sr._cmds = true;
+   m24sr._verbose = true;
+   m24sr._cmds = true;
    m24sr._setup();
    displayFreeRAM();
    NdefMessage message = NdefMessage();
