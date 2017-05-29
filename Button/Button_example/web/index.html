@@ -42,7 +42,7 @@
     <div id="demo_body" class="container">
 
         <h1>
-            XXX Crossbar.io IoT Cookbook: Pi/Button Frontend
+            Crossbar.io IoT Cookbook: Pi/Button Frontend
         </h1>
 
         <p>
@@ -75,21 +75,42 @@
             </tr>
         </table>
 
-        <h2>Button Trigger</h2>
+        <h1>Button Trigger</h1>
         <p>
-           Klick on Button to test
+           Click to test communication with raspberry backend
         <p class="center">
             <button onclick="press();">PRESS</button>
-        
         </p>
 
-        <h2>Button Indicator</h2>
+        <h1>Button Indicator</h1>
         <p>
-            When the button on the Pi is active (playing a beep sequence), this indicator is flashed.
+            When the button on the Pi has detected a falling edge, this indicator is flashed for 1 sec.
         </p>
         <p class="center">
             <span id="notifier"></span>
         </p>
+
+        <h1>LED</h1>
+        <p>
+            There are two Buttons to turn the LED on pin 15 on and off
+        </p>
+        <p class="center">
+            <button onclick="led_on();">LED_ON</button>
+            <button onclick="led_off();">LED_OFF</button>
+        </p>
+        <style>
+        #LED {
+            display: inline-block;
+            width: 20em;
+            height: 2em;
+            background-color: #FFFFFF;
+        }
+    </style>
+
+ <p class="center">
+            <span id="LED"></span>
+        </p>
+
 
     </div>
 

@@ -81,9 +81,18 @@ function connect() {
            console.log('button_released');
            notifier.style.backgroundColor = '#333';
        }
+       function LED_on() {
+          LED.style.backgroundColor = '#E8B32D';
+       }
+
+       function LED_off(){
+        LED.style.backgroundColor = '#FFFFFF';
+      }
 
       session.subscribe(prefix + 'button_pressed', on_beep_started);
       session.subscribe(prefix + 'button_released', on_beep_ended);
+      session.subscribe(prefix + 'LED_off', LED_off);
+      session.subscribe(prefix + 'LED_on', LED_on);
    };
 
 
@@ -119,6 +128,38 @@ function press() {
         session.call(prefix + 'press',[]).then(
             function () {
                 console.log('Website button pressed!');
+            },
+            function (err) {
+                console.log('beeping failed:', err);
+            }
+        );
+    } else {
+        console.log('cannot beep: not connected');
+    }
+}
+
+
+function led_on() {
+    if (session) {
+        session.call(prefix + 'led_on',[]).then(
+            function () {
+                console.log('Led activated');
+            },
+            function (err) {
+                console.log('beeping failed:', err);
+            }
+        );
+    } else {
+        console.log('cannot beep: not connected');
+    }
+}
+
+
+function led_off() {
+    if (session) {
+        session.call(prefix + 'led_off',[]).then(
+            function () {
+                console.log('LED deactivated');
             },
             function (err) {
                 console.log('beeping failed:', err);
