@@ -1,17 +1,6 @@
 #!/usr/bin/python
-import RPi.GPIO as GPIO
-import time
 
-import os
-import argparse
-
-import six
-
-import txaio
-txaio.use_twisted()
-
-import RPi.GPIO as GPIO
-
+from threading import current_thread
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.error import ReactorNotRunning
@@ -21,10 +10,17 @@ from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp.exception import ApplicationError
 
+import RPi.GPIO as GPIO
 
 
-# if GPIO.event_detected(channel):
-#     print('Button pressed')
+import os
+import argparse
+
+import six
+
+import txaio
+txaio.use_twisted()
+
 
 def get_serial():
     """
@@ -39,31 +35,36 @@ def get_serial():
 
 
 def config_button_gpio(channel):
+    """
+    configure the Button GPIO Pin
+    """
 
-    # Pinreferenz waehlen
     GPIO.setmode(GPIO.BCM)
 
-    # GPIO 18 (Pin 12) als Input definieren und Pullup-Widerstand aktivieren
-    GPIO.setup(channel, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    # declare GPIO Pin as input and enable the pull-up resistor
+    GPIO.setup(channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    #    # add rising edge detection on a channel
 
 def config_LED_gpio(LED_pin):
 
-    # Pinreferenz waehlen
+    """
+    configure the LED - GPIO Pin
+    """
     GPIO.setmode(GPIO.BCM)
 
-    # GPIO 18 (Pin 12) als Input definieren und Pullup-Widerstand aktivieren
+    # declare GPIO Pin as output
     GPIO.setup(LED_pin, GPIO.OUT)
 
-    #    # add rising edge detection on a channel
 
 class ButtonComponent(ApplicationSession):
-    """Our component wrapping a Button interrupt."""
+    """Our component wrapping a Button with edge detection."""
 
     LED_status = False
+
     @inlineCallbacks
     def onJoin(self, details):
+        self.log.info('Session joined on thread {thread_id}: {details}', thread_id=current_thread().ident, details=details)
+
         LED_pin = 15
 
         self.LED_status = False
@@ -86,10 +87,9 @@ class ButtonComponent(ApplicationSession):
         GPIO.setwarnings(False)
         # config_button_gpio(_button_pin)
         config_button_gpio(18)
-        GPIO.add_event_detect(18, GPIO.FALLING, callback = self.press, bouncetime = 250)
+        GPIO.add_event_detect(18, GPIO.FALLING, callback=self.press, bouncetime=250)
 
-
-        #initialize LED
+        # initialize LED
         config_LED_gpio(LED_pin)
 
         # remember startup timestamp
@@ -103,8 +103,8 @@ class ButtonComponent(ApplicationSession):
             (self.started, u'started'),
             (self._is_pressed, u'is_pressed'),
             (self.press, u'press'),
-            (self.led_on,u'led_on'),
-            (self.led_off,u'led_off')
+            (self.led_on, u'led_on'),
+            (self.led_off, u'led_off')
         ]:
             uri = u'{}.{}'.format(self._prefix, proc[1])
             yield self.register(proc[0], uri)
@@ -133,53 +133,68 @@ class ButtonComponent(ApplicationSession):
         return self._is_pressed
 
     def get_status(self):
+
         return self.LED_status
 
-
-    def set_status(self,status):
+    def set_status(self, status):
 
         self.LED_status = status
         # self.log.info(self.get_status())
         return 0
 
-    @inlineCallbacks
-    def press(self,portnr=1000):
-        """Trigger button press."""
+    def press(self, portnr=1000):
+        """is called by the edge detection and running in a new thread
+            calls the _press() method which performs the action triggered by the button """
+        self.log.info('GPIO edge callback on thread {thread_id}', thread_id=current_thread().ident)
+        reactor.callFromThread(self._press)
 
+    @inlineCallbacks
+    def _press(self):
+        """button pressed handler"""
+
+        self.log.info('Button pressed handler on thread {thread_id}', thread_id=current_thread().ident)
+
+        """ if the button is pressed during the progress is running this Error will be fired"""
         if self._is_pressed:
             raise ApplicationError(u'{}.already-pressed'.format(self._prefix), 'Button is already pressed ')
 
         self._is_pressed = True
         self.log.info("Pressed")
 
+        """ publish event button_pressed"""
         self.publish(u'{}.button_pressed'.format(self._prefix))
+
+        """wait for a short time"""
         yield sleep(1000 / 1000.)
+
         self._is_pressed = False
+        """ publish event button_released"""
         self.publish(u'{}.button_released'.format(self._prefix))
+
         self.log.info("released")
 
     @inlineCallbacks
-    def led_on(self,LED_pin=15):
-        if self.get_status()==False:
+    def led_on(self, LED_pin=15):
+        """ callback function to put LED GPIO high => LED on"""
+        if self.get_status() is False:
             GPIO.output(LED_pin, GPIO.HIGH)
             self.publish(u'{}.LED_on'.format(self._prefix))
             self.log.info("LED_on")
             self.set_status(True)
-            pass
+
         yield sleep(1 / 1000.)
 
     @inlineCallbacks
-    def led_off(self,LED_pin=15):
-        if self.get_status()==True:
+    def led_off(self, LED_pin=15):
+        """ callback function to put LED GPIO low => LED off """
+        if self.get_status() is True:
             GPIO.output(LED_pin, GPIO.LOW)
             self.publish(u'{}.LED_off'.format(self._prefix))
             self.log.info("LED_off")
             self.set_status(False)
-            pass
+
         yield sleep(1 / 1000.)
 
-
-    @inlineCallbacks
     def onLeave(self, details):
         self.log.info("session closed: {details}", details=details)
         self.disconnect()
@@ -192,7 +207,6 @@ class ButtonComponent(ApplicationSession):
             reactor.stop()
         except ReactorNotRunning:
             pass
-
 
 
 if __name__ == '__main__':
@@ -219,7 +233,6 @@ if __name__ == '__main__':
         # GPI pin of buzzer
         u'button_pin': 18,
     }
-
 
     # create and start app runner for our app component ..
     runner = ApplicationRunner(url=args.url, realm=args.realm, extra=extra)
