@@ -72,12 +72,12 @@ function connect() {
            }
        );
 
-       function on_beep_started (args, kwargs) {
+       function button_pressed (args, kwargs) {
            console.log('button pressed:', kwargs);
            notifier.style.backgroundColor = '#ff0';
        }
 
-       function on_beep_ended () {
+       function button_released () {
            console.log('button_released');
            notifier.style.backgroundColor = '#333';
        }
@@ -89,8 +89,8 @@ function connect() {
         LED.style.backgroundColor = '#FFFFFF';
       }
 
-      session.subscribe(prefix + 'button_pressed', on_beep_started);
-      session.subscribe(prefix + 'button_released', on_beep_ended);
+      session.subscribe(prefix + 'button_pressed', button_pressed);
+      session.subscribe(prefix + 'button_released', button_released);
       session.subscribe(prefix + 'LED_off', LED_off);
       session.subscribe(prefix + 'LED_on', LED_on);
    };
