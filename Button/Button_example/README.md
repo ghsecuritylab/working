@@ -75,19 +75,21 @@ Switches the LED off connected to the pi
 
 The component will emit an event when the Button is pressed
 
-* `io.crossbar.demo.iotstarterkit.<serial>.buzzer.button_pressed()`
+* `io.crossbar.demo.iotstarterkit.<serial>.button.button_pressed()`
 
 
 #### button_released
 
 After one second the button_released event will be published
 
-* `io.crossbar.demo.iotstarterkit.<serial>.buzzer.button_released()`
+* `io.crossbar.demo.iotstarterkit.<serial>.button.button_released()`
 
 
 ### Errors
 
 When between button_pressed and button_released event, the button is pressed again you will see this error
 
-* `io.crossbar.demo.iotstarterkit.<serial>.buzzer.is_pressed()`
+* `io.crossbar.demo.iotstarterkit.<serial>.button.is_pressed()`
+
+
 
