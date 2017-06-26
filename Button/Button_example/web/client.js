@@ -130,11 +130,11 @@ function press() {
                 console.log('Website button pressed!');
             },
             function (err) {
-                console.log('beeping failed:', err);
+                console.log('pressed failed:', err);
             }
         );
     } else {
-        console.log('cannot beep: not connected');
+        console.log('cannot press : not connected');
     }
 }
 
@@ -146,11 +146,11 @@ function led_on() {
                 console.log('Led activated');
             },
             function (err) {
-                console.log('beeping failed:', err);
+                console.log('pressed failed:', err);
             }
         );
     } else {
-        console.log('cannot beep: not connected');
+        console.log('cannot press: not connected');
     }
 }
 
@@ -162,10 +162,10 @@ function led_off() {
                 console.log('LED deactivated');
             },
             function (err) {
-                console.log('beeping failed:', err);
+                console.log('pressed failed:', err);
             }
         );
     } else {
-        console.log('cannot beep: not connected');
+        console.log('cannot press: not connected');
     }
 }
