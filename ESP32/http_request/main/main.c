@@ -31,7 +31,7 @@ const int CONNECTED_BIT = BIT0;
 
 /*Values for request*/
 #define crossbar_call_function "com.example.split_name"
-#define call_args  "Max Mustermann"
+#define call_args  "Maxi Mustermann"
 
 static const char *TAG = "example";
 
@@ -74,7 +74,7 @@ static void initialise_wifi(void)
 {
 
 
-    printf( "Debug-Output \n WIFI_SSID_VALUE:  %s\n, WIFI_KEY_VALUE: %s\n, WEB_SERVER: %s\n, WEB_PORT: %s\n, WEB_URL: %s\n", WIFI_SSID_VALUE,WIFI_KEY_VALUE,WEB_SERVER,WEB_PORT,WEB_URL);
+    printf( "Debug-Output \n WIFI_SSID_VALUE:  %s,\n WIFI_KEY_VALUE: %s,\n WEB_SERVER: %s,\n WEB_PORT: %s,\n WEB_URL: %s,\n", WIFI_SSID_VALUE,WIFI_KEY_VALUE,WEB_SERVER,WEB_PORT,WEB_URL);
 
 
     tcpip_adapter_init();
@@ -108,6 +108,7 @@ static void http_get_task(void *pvParameters)
     strcat(REQUEST,"\r\n");
     strcat(REQUEST,"\r\n");
     strcat(REQUEST, payload);
+
     printf("%s\n", REQUEST);
 
 
