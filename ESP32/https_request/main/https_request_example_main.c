@@ -67,29 +67,11 @@ const int CONNECTED_BIT = BIT0;
 
 /* Constants that arhttps://now.httpbin.org/en't configurable in menuconfig */
 #define WEB_SERVER "cbdemo-eu-central-1.crossbar.io"
-#define WEB_PORT "443"
-#define WEB_URL "https://cbdemo-eu-central-1.crossbar.io/votes/index.html"
 
-
-// #define WEB_SERVER "now.httpbin.org"
-// #define WEB_PORT "443"
-// #define WEB_URL "https://now.httpbin.org/"
-
- // #define CROSSBAR_HTTP_BRIDGE_VALUE "https://now.httpbin.org:443"
 
 static const char *TAG = "example";
 
-// static const char *REQUEST = "GET " WEB_URL " HTTP/1.1\r\n"
-//     "Host: "WEB_SERVER"\r\n"
-//     "User-Agent: esp-idf/1.0 esp32\r\n"
-//     "Accept: */*\r\n"
-//     "\r\n";
 
-// static const char *REQUEST = "GET " WEB_URL " HTTP/1.1\r\n"
-//     "Host: "WEB_SERVER"\r\n"
-//     "User-Agent: esp-idf/1.0 esp32\r\n"
-//     "Accept: */*\r\n"
-//     "\r\n";
 #define crossbar_call_function "com.example.split_name"
 #define call_args  "Maxi Mustermann"
 
@@ -97,21 +79,16 @@ static const char * payload  = "{\"procedure\":" "\"" crossbar_call_function "\"
 
 
  char *REQUEST_Template = "POST /call HTTP/1.0\r\n"
-    "Host: " WEB_SERVER "\r\n"
+    "Host: ";
+
+
+    // WEB_SERVER
+
+char *REQUEST_Template2 = "\r\n"
     "User-Agent: esp-idf/1.0 esp32\r\n"
     "Accept: */*\r\n"
     "Content-Type: application/json\r\n"
     "Content-Length: ";
-
-
-
-// > GET / HTTP/1.1
-// > Host: cbdemo-eu-central-1.crossbar.io
-// > User-Agent: curl/7.55.0-DEV
-// > Accept: */*
-
-
-
 int error;
 url_parser_url_t * parsed_url;
 char parsed_url_port_string [6];
@@ -119,15 +96,15 @@ char parsed_url_port_string [6];
 /* Root cert for howsmyssl.com, taken from server_root_cert.pem
 
    The PEM file was extracted from the output of this command:
-   openssl s_client -showcerts -connect www.howsmyssl.com:443 </dev/null
+
 
    The CA root cert is the last cert given in the chain of certs.
 
    To embed it in the app binary, the PEM file is named
+
    in the component.mk COMPONENT_EMBED_TXTFILES variable.
 */
-// extern const uint8_t server_root_cert_pem_start[] asm("_binary_server_root_cert_pem_start");
-// extern const uint8_t server_root_cert_pem_end[]   asm("_binary_server_root_cert_pem_end");
+
 
 extern const uint8_t server_root_cert_pem_start[] asm("_binary_isrgrootx1_pem_start");
 extern const uint8_t server_root_cert_pem_end[]   asm("_binary_isrgrootx1_pem_end");
@@ -164,17 +141,9 @@ static void initialise_wifi(void)
      error = parse_url(CROSSBAR_HTTP_BRIDGE_VALUE, true , parsed_url);
 
 
-// static const char *REQUEST = "GET " parsed_url->protocol parsed_url->host " HTTP/1.0\r\n"
-//     "Host: "parsed_url->host"\r\n"
-//     "User-Agent: esp-idf/1.0 esp32\r\n"
-//     "\r\n";
-// itoa(parsed_url->port,parsed_url_port_string,10);
-          // error = parse_url("\""WEB_URL"\"", true , parsed_url);
-
-
     printf("    error = parse_url(WEB_URL, true , parsed_url);\nerrorcode: %d\n",error );
     printf("Protocol: '%s' - Host: '%s' - Port: '%s' - Path: '%s'\n",parsed_url->protocol, parsed_url->host, parsed_url->port_string,parsed_url->path);
-    printf( "Debug-Output \n WIFI_SSID_VALUE:  %s,\n WIFI_KEY_VALUE: %s,\n WEB_SERVER: %s,\n WEB_PORT: %s,\n WEB_URL: %s,\n", WIFI_SSID_VALUE,WIFI_KEY_VALUE,WEB_SERVER,WEB_PORT,WEB_URL);
+    printf( "Debug-Output \n WIFI_SSID_VALUE:  %s,\n WIFI_KEY_VALUE: %s\n", WIFI_SSID_VALUE,WIFI_KEY_VALUE);
     tcpip_adapter_init();
     wifi_event_group = xEventGroupCreate();
     ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
@@ -201,13 +170,13 @@ static void https_get_task(void *pvParameters)
     char buf[512];
     int ret, flags, len;
     char buffer2[20];
-
-
-
+    // Build the HTTP Package
 
     int length = strlen(payload);
-    char  REQUEST[strlen(REQUEST_Template)+length+(2*strlen("\r\n"))]; //New String for whole request message
+    char  REQUEST[strlen(REQUEST_Template)+strlen(REQUEST_Template2)+length+(2*strlen("\r\n"))]; //New String for whole request message
     strcpy (REQUEST,REQUEST_Template);
+    strcat(REQUEST,parsed_url->host);
+    strcat(REQUEST,REQUEST_Template2);
     itoa(length,buffer2,10);
     strcat(REQUEST, buffer2);
     strcat(REQUEST,"\r\n");
