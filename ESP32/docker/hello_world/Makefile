@@ -4,6 +4,7 @@
 #
 
 PROJECT_NAME := hello-world
+
 BATCH_BUILD=1
 include $(IDF_PATH)/make/project.mk
 

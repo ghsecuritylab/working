@@ -2,4 +2,6 @@
 
 Starts a FreeRTOS task to print "Hello World"
 
-See the README.md file in the upper level 'examples' directory for more information about examples.
+it will be compiled and flashed with help of docker
+
+no additional environment-variables or settings needed
