@@ -55,4 +55,4 @@ esp32_bash:
 	-e WIFI_KEY \
 	-e CROSSBAR_HTTP_BRIDGE \
 	-e WIFI_SSID \
-	-it esp32_bash
+	-it esp32

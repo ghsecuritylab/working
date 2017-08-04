@@ -4,12 +4,14 @@
 #
 
 PROJECT_NAME := hello-world
+#this Flag is needed for setting all additional needed as default
 BATCH_BUILD=1
+
 include $(IDF_PATH)/make/project.mk
 
 
 build:
-	sudo docker build --rm -t esp32 .
+	subdirectory docker build --rm -t esp32 .
 
 esp32:
 	 docker run \
@@ -55,4 +57,4 @@ esp32_bash:
 	-e WIFI_KEY \
 	-e CROSSBAR_HTTP_BRIDGE \
 	-e WIFI_SSID \
-	-it esp32_bash
+	-it esp32
